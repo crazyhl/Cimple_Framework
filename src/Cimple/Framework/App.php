@@ -11,5 +11,19 @@ namespace Cimple\Framework;
 
 class App
 {
+    protected  $config;
+    /**
+     * 启动app
+     */
+    public function run()
+    {
+        $this->config = $this->loadConfig();
+    }
 
+    /**
+     * 载入配置文件
+     */
+    protected function loadConfig()
+    {
+    }
 }
