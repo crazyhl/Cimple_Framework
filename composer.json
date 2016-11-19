@@ -1,0 +1,28 @@
+{
+  "name": "cimple/framework",
+  "description": "The simple php mvc framework",
+  "keywords": ["url", "scanner", "csv"],
+  "homepage": "http://www.h57.pw",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Chris Hao",
+      "homepage": "http://www.h57.pw",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "crazyhl@163.com"
+  },
+  "require": {
+    "php" : ">=5.6.0",
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.3"
+  }
+  "autoload": {
+    "psr-4": {
+      "Cimple\\Framework\\": "src/"
+    }
+  }
+}
