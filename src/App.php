@@ -12,12 +12,15 @@ namespace Cimple\Framework;
 class App
 {
     protected  $config;
+    protected $urlInfo;
     /**
      * 启动app
      */
     public function run()
     {
-        $this->config = $this->loadConfig();
+        var_dump($_SERVER);
+//        $this->urlInfo = parse_url();
+//        $this->config = $this->loadConfig();
     }
 
     /**
@@ -25,5 +28,6 @@ class App
      */
     protected function loadConfig()
     {
+        var_dump(__NAMESPACE__);
     }
 }
