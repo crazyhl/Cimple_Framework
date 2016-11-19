@@ -15,13 +15,12 @@ include 'Define.php';
 class App
 {
     // 路径信息
-    protected $urlInfo;
+    private $urlInfo;
     // 模块信息
-    protected $module;
+    private $module;
     // 模块内的请求路径
-    protected $requestPath;
-    // 请求方式
-    protected $requestMethod;
+    private $requestPath;
+
 
     /**
      * 启动app
@@ -35,17 +34,14 @@ class App
         $this->parseRequest();
         // 加载配置项
         $this->loadConfig();
-        Config::set('test.xxx.a', [
-            'a' => '1',
-            'b' => '1',
-            'c' => '1',
-            'd' => '1',
-        ]);
+
+        $this->dispatch();
 
         echo '<pre>';
         var_dump($_SERVER);
         var_dump(Config::get());
-        var_dump($this->requestMethod);
+        var_dump($this->module);
+        var_dump($this->requestPath);
         echo '</pre>';
     }
 
@@ -78,14 +74,13 @@ class App
      */
     private function parseRequest()
     {
-        $this->requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
         if (StringUtils::startWith($this->urlInfo['path'], '/index.php')) {
             $this->urlInfo['path'] = substr($this->urlInfo['path'], 10);
         }
         $this->urlInfo['path'] = substr($this->urlInfo['path'], 1);
         $this->requestPath = '/';
         if (empty($this->urlInfo['path'])) {
-            $this->module = $this->config['default_module'];
+            $this->module = Config::get('default_module');
         } else {
             $splashIndex = strpos($this->urlInfo['path'], '/');
             if ($splashIndex === false) {
@@ -97,6 +92,35 @@ class App
             }
         }
         $this->module = ucwords($this->module);
+    }
+
+    /**
+     * 分发处理请求
+     */
+    private function dispatch()
+    {
+        // 载入模块下的路由文件表
+        $moduleRouteFileName = ROOT_PATH . Config::get('application_name') . DS . $this->module . DS . 'Route.php';
+        if (!file_exists($moduleRouteFileName)) {
+            echo $moduleRouteFileName . " 没找到路由文件哦！";
+            exit();
+        }
+        include $moduleRouteFileName;
+
+        $routeArr = Router::getRequestByMethod(Request::getRequestMethod());
+        $requestUrlArr= array_keys($routeArr);
+        foreach ($requestUrlArr as $reqUrl) {
+            if (preg_match('#^' . $reqUrl . '$#', $this->requestPath, $ms)) {
+                $func = $routeArr[$reqUrl];
+                unset($ms[0]);
+                if (is_callable($func)) {
+                    call_user_func_array($func, array_values($ms));
+                }
+                return;
+            }
+        }
+        echo $this->requestPath . " 路由表里面没有这个方法哦！";
+        exit();
     }
 
 }

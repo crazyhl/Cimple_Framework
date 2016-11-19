@@ -27,6 +27,7 @@ class Config
             $nameArr = explode('.', $name);
             $putName = &self::$config;
             foreach ($nameArr as $n) {
+                $n = trim($n);
                 if (empty($putName[$n])) {
                     $putName[$n] = [];
                 }
