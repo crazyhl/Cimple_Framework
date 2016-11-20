@@ -10,8 +10,9 @@ namespace Cimple\Framework\Response;
 
 
 use Cimple\Framework\Config;
+use Psr\Http\Message\MessageInterface;
 
-abstract class Response
+abstract class Response implements MessageInterface
 {
     protected $templateDir;
     protected $data = [];

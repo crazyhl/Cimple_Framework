@@ -1,0 +1,10 @@
+
+/vendor/
+将删除 .idea/
+将删除 composer.lock
+.DS_Store
+composer.lock
+phpunit.xml
+vendor
+.idea
+clover.xml
