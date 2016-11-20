@@ -9,6 +9,7 @@
 namespace Cimple\Framework;
 
 use Cimple\Framework\Factory\ResponseFactory;
+use Cimple\Framework\Response\Response;
 use Cimple\Framework\Utils\StringUtils;
 
 
@@ -151,6 +152,7 @@ class App
                 return;
             }
         }
+        http_response_code(404);
         echo $this->requestPath . " 路由表里面没有这个方法哦！";
         exit();
     }
