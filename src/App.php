@@ -20,7 +20,24 @@ class App
     private $module;
     // 模块内的请求路径
     private $requestPath;
+    // request
+    private $request;
+    // response
+    private $response;
 
+    private static $instance;
+
+    private function __construct()
+    {
+    }
+
+    public static function getInstance() {
+        if (self::$instance instanceof App) {
+            return self::$instance;
+        }
+        self::$instance = new App();
+        return self::$instance;
+    }
 
     /**
      * 启动app
@@ -34,7 +51,9 @@ class App
         $this->parseRequest();
         // 加载配置项
         $this->loadConfig();
-
+        // 配置一些东西
+        $this->request = Request::getInstance();
+        // 处理请求
         $this->dispatch();
 
         echo '<pre>';
@@ -107,14 +126,14 @@ class App
         }
         include $moduleRouteFileName;
 
-        $routeArr = Router::getRequestByMethod(Request::getRequestMethod());
+        $routeArr = Router::getRequestByMethod($this->request->getRequestMethod());
         $requestUrlArr= array_keys($routeArr);
         foreach ($requestUrlArr as $reqUrl) {
             if (preg_match('#^' . $reqUrl . '$#', $this->requestPath, $ms)) {
                 $func = $routeArr[$reqUrl];
                 unset($ms[0]);
                 if (is_callable($func)) {
-                    call_user_func_array($func, array_values($ms));
+                    return call_user_func_array($func, array_values($ms));
                 }
                 return;
             }
