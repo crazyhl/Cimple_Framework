@@ -17,11 +17,12 @@ class Request
     {
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance instanceof Request) {
             return self::$instance;
         }
-        self::$instance  = new Request();
+        self::$instance = new Request();
         return self::$instance;
     }
 
@@ -53,7 +54,8 @@ class Request
         return self::input($_POST, $name, $defaultValue);
     }
 
-    public function input($data, $name, $defaultValue) {
+    public function input($data, $name, $defaultValue)
+    {
         static $valArr = [];
         if ($valArr[$name]) {
             return $valArr[$name];

@@ -8,7 +8,9 @@
 
 namespace Cimple\Framework;
 
+use Cimple\Framework\Factory\ResponseFactory;
 use Cimple\Framework\Utils\StringUtils;
+
 
 include 'Define.php';
 
@@ -20,9 +22,13 @@ class App
     private $module;
     // 模块内的请求路径
     private $requestPath;
-    // request
+    /**
+     * @var Request
+     */
     private $request;
-    // response
+    /**
+     * @var Response
+     */
     private $response;
 
     private static $instance;
@@ -31,7 +37,8 @@ class App
     {
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance instanceof App) {
             return self::$instance;
         }
@@ -52,16 +59,21 @@ class App
         // 加载配置项
         $this->loadConfig();
         // 配置一些东西
+        $this->sysSetting();
         $this->request = Request::getInstance();
+        $this->response = ResponseFactory::getInstance();
+
         // 处理请求
         $this->dispatch();
 
-        echo '<pre>';
-        var_dump($_SERVER);
-        var_dump(Config::get());
-        var_dump($this->module);
-        var_dump($this->requestPath);
-        echo '</pre>';
+        if (Config::get('debug', false)) {
+            echo '<pre>';
+            var_dump($_SERVER);
+            var_dump(Config::get());
+            var_dump($this->module);
+            var_dump($this->requestPath);
+            echo '</pre>';
+        }
     }
 
     /**
@@ -111,6 +123,7 @@ class App
             }
         }
         $this->module = ucwords($this->module);
+        Config::set('module_path', $this->module);
     }
 
     /**
@@ -127,7 +140,7 @@ class App
         include $moduleRouteFileName;
 
         $routeArr = Router::getRequestByMethod($this->request->getRequestMethod());
-        $requestUrlArr= array_keys($routeArr);
+        $requestUrlArr = array_keys($routeArr);
         foreach ($requestUrlArr as $reqUrl) {
             if (preg_match('#^' . $reqUrl . '$#', $this->requestPath, $ms)) {
                 $func = $routeArr[$reqUrl];
@@ -140,6 +153,22 @@ class App
         }
         echo $this->requestPath . " 路由表里面没有这个方法哦！";
         exit();
+    }
+
+    private function sysSetting()
+    {
+        // 设置时区
+        date_default_timezone_set(Config::get('timezone', 'Asia/Shanghai'));
+        if (Config::get('debug', false)) {
+            $cacheDir = ROOT_PATH . Config::get('cache_dir', 'Cache');
+            if (!file_exists($cacheDir) || !is_dir($cacheDir)) {
+                mkdir($cacheDir, 0755, true);
+            }
+            $templateDir = $cacheDir . DS . Config::get('template_cache_dir');
+            if (!file_exists($templateDir) || !is_dir($templateDir)) {
+                mkdir($templateDir, 0755, true);
+            }
+        }
     }
 
 }

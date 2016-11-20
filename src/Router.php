@@ -59,7 +59,8 @@ class Router
         self::route(['get', 'post', 'patch', 'delete'], $url, $func);
     }
 
-    public static function getRequestByMethod($method) {
+    public static function getRequestByMethod($method)
+    {
         return self::$route[$method];
     }
 }

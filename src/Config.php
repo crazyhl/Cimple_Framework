@@ -12,6 +12,12 @@ class Config
     private static $config = [
         'default_module' => 'Home',
         'application_name' => 'App',
+        'timezone' => 'Asia/Shanghai',
+        'template' => 'twig',
+        'template_dir' => 'template',
+        'cache_dir' => 'Cache',
+        'template_cache_dir' => 'template',
+        'debug' => true,
     ];
 
     public static function set($name, $value)
@@ -40,7 +46,7 @@ class Config
         }
     }
 
-    public static function get($name, $defalutValue)
+    public static function get($name = null, $defalutValue = null)
     {
         if (empty($name)) {
             return self::$config;

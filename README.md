@@ -5,6 +5,8 @@ Cimple Frameword V0.1
 **更新日志**
 
 1. 2016年11月19日 创建项目
+    1. 增加app，config，router
+2. 2016年11月20日 增加Request，增加对twig末班的解析
 
 ***不准备实现的东西***
 
